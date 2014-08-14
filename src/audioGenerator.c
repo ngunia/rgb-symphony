@@ -8,7 +8,8 @@
 #include "wavfile.h"
 #include "audioGenerator.h"
 
-const int NUM_SAMPLES = (WAVFILE_SAMPLES_PER_SECOND*2);
+// half a secondish per note
+const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
 
 /*
  * function: key2freq 
@@ -54,6 +55,7 @@ void synthesizeNote(int key, int length, short *rv) {
 
 /* worry about this later
 int write_wav(long* sound, int len) {
+
 }
 */
 
@@ -64,19 +66,19 @@ int main()
 	int scaleLen = sizeof(scale)/sizeof(scale[0]);
 	int volume = 32000;
 	int i;
-
+	
 	short** waveform; // holds a list of notes
 	// allocate memory for waveform
-	waveform = (int**)malloc(scaleLen*sizeof(int*));
-
+	waveform = (short**)malloc(scaleLen*sizeof(short*));
 	for(i=0; i < scaleLen; i++) {
 		waveform[i] = (short*)malloc(length*sizeof(short));
 	}
 
 	// generate notes and store to waveform
 	for(i=0;i<scaleLen;i++) {
-		synthesizeNote(waveform[i], scale[i], length);
+		synthesizeNote(scale[i], length, waveform[i]);
 	}
+
 
 	// write to wav file
 	FILE * f = wavfile_open("sound.wav");
@@ -89,6 +91,7 @@ int main()
 	wavfile_close(f);
 
 	return 0;
+
 }
 
 

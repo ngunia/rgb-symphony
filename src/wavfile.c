@@ -60,7 +60,7 @@ FILE * wavfile_open( const char *filename )
 
 }
 
-void wavfile_write( FILE *file, short* data[], int length, int size )
+void wavfile_write( FILE *file, short **data, int length, int size )
 {
 	int i;
 	for(i = 0; i < size; i++) {
