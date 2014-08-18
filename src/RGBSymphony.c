@@ -21,12 +21,12 @@ int main(int argc, char ** argv) {
 	int* notes = getNoteArray(src, dim);
 	int lengthNotes = (src->height/dim)*(src->width/dim);
 
-	/*
+	
 	for( i = 0; i < lengthNotes; i++)
 	{
 		printf("%d ", notes[i]);
 	}
-	*/
+	
 
 	float** waveform; // holds a list of notes
 	// allocate memory for waveform

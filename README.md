@@ -1,16 +1,21 @@
 rgb-symphony
 ============
-working notes:
-To install/compile Port Audio, see:
-http://portaudio.com/docs/v19-doxydocs/compile_linux.html
-
-To install/compile OpenCV, see:
-http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html#linux-installation
-
-OpenMP is part of GCC.
+Compile by typing: make
+Call code by typing: ./RGBSymphony <image_file> <square_dimension>
+Listen by typing: aplay sound.wav
 
 
+TODO:
+general: 
+add open mp threading
 
--lm: link math.h
+image:
+better mapping algorithm
+fix to read left to right
+assertions:
+	file exists
+	dimensions work
 
-gcc src/audioGenerator.c src/wavfile.c -lm -o audioGenerator 
+sound:
+pass in output file name
+pass in BPM (divisible by 4)
