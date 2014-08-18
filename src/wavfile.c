@@ -32,7 +32,7 @@ FILE * wavfile_open( const char *filename )
 	struct wavfile_header header;
 
 	int samples_per_second = WAVFILE_SAMPLES_PER_SECOND;
-	int bits_per_sample = 16;
+	int bits_per_sample = 32;
 
 	strncpy(header.riff_tag,"RIFF",4);
 	strncpy(header.wave_tag,"WAVE",4);
@@ -41,7 +41,7 @@ FILE * wavfile_open( const char *filename )
 
 	header.riff_length = 0;
 	header.fmt_length = 16;
-	header.audio_format = 1;
+	header.audio_format = 3;
 	header.num_channels = 1;
 	header.sample_rate = samples_per_second;
 	header.byte_rate = samples_per_second*(bits_per_sample/8);
@@ -60,11 +60,11 @@ FILE * wavfile_open( const char *filename )
 
 }
 
-void wavfile_write( FILE *file, short **data, int length, int size )
+void wavfile_write( FILE *file, float **data, int length, int size )
 {
 	int i;
 	for(i = 0; i < size; i++) {
-  		fwrite(data[i], sizeof(short),length,file);
+  		fwrite(data[i], sizeof(float),length,file);
 	}
 }
 

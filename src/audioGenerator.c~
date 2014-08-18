@@ -4,11 +4,10 @@
 #include <math.h>
 #include <time.h>
 #include <errno.h>
-
 #include "wavfile.h"
 #include "audioGenerator.h"
 
-const float SEC_PER_NOTE = 0.5;
+// ~0.5 seconds per note
 const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
 
 /*
@@ -17,7 +16,7 @@ const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
  * computes the frequency of the passed in note of a piano
  *  key: number of key on piano (in order) from 1-88
  *
- *  returns: the frequency of the note on the piano
+ * returns: the frequency of the note on the piano
  *
  *  Calculations are based on formula given here:
  *  http://en.wikipedia.org/wiki/Piano_key_frequencies
@@ -41,16 +40,85 @@ float key2freq(int key) {
 	return freq;
 }
 
-void synthesizeNote(int key, int length, short *rv) {
+/*
+ * function: synthesizeNote 
+ * --------------------
+ * computes a sinusoidal waveform and its second and third 
+ * harmonic to create a note
+ *
+ * key: key from 1-88, represents piano keys
+ * rv: the array of floats that represents the resulting sound
+ * length: the number of samples per note
+ */
+void synthesizeNote(int key,  float *rv, int length) {
 	int volume = 32000;
 	
 	int i;
 	for(i=0;i<NUM_SAMPLES;i++) {
 		// sample times in seconds
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
+		// get fundamental freq
+		float freq = key2freq(key);
 		// sin wave with given frequency at time t
-		rv[i] = volume*sin(2*M_PI*key2freq(key)*t);
+		// also add second and third harmonic with 1/(2^(n-1)) amplitude
+		rv[i] = volume*(sin(2*M_PI*freq*t));/* +
+				(1/2)*sin(4*M_PI*freq*t) +
+				(1/4)*sin(6*M_PI*freq*t));*/
 	}
+}
+
+/*
+ * function: synthesizeNote 
+ * --------------------
+ * applies an ADSR envelope to the passed in signal
+ * 
+ * note: float array of note samples that will be enveloped
+ * length: the number of samples per note
+ *
+ * Description of ADSR envelopes
+ * http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope
+ */
+void envelope(float *note, int length) {
+	// allocate envelope parts
+	// attack 20% :  A = 0 + x / (0.2*length)
+	// decay 5% :   D = 1 - 0.2*x/(0.05*length)
+	// sustain 40% : S = 0.8 - 0.05*x/(0.4*length)  
+	// release 35% : R = 0.75 - 0.75*x/(0.35*length)
+	float * ADSR; // holds entire envelope
+	ADSR = malloc(length*sizeof(float));
+	// 0 out ADSR array
+	memset(ADSR, 0, sizeof(ADSR));
+	// k is keeping track of index, x is linear independent var for y=mx+b
+	int k, x;
+	// add attack to ADSR
+	for(k=0,x=0; k < 0.2*length; k++, x++) {
+		ADSR[k] = 0 + x / (0.2*length);
+		x++;
+	}
+
+	// add decay to ADSR, x < (0.2+0.05)*length
+	for(k,x=0; k < 0.25*length; k++, x++) {
+		ADSR[k] = 1 - 0.2*x/(0.05*length);	
+		x++;
+	}
+
+	// add sustain to ADSR, x < (0.2+0.05+0.4)*length
+	for(k,x=0; k < 0.65*length; k++, x++) {
+		ADSR[k] = 0.8 - 0.05*x/(0.4*length);
+		x++;
+	}
+
+	// add release to ADSR, x < (0.2+0.05+0.4+0.35)*length
+	for(k,x=0; k < length; k++, x++) {
+		ADSR[k] = 0.75 - 0.75*x/(0.35*length);
+	}
+
+	// apply envelope to signal
+	int i;
+	for(i=0; i < length; i++) {
+		note[i] = note[i]*ADSR[i];
+	}
+	free(ADSR);
 }
 
 /* worry about this later
@@ -67,18 +135,22 @@ int main()
 	int volume = 32000;
 	int i;
 	
-	short** waveform; // holds a list of notes
+	float** waveform; // holds a list of notes
 	// allocate memory for waveform
-	waveform = (short**)malloc(scaleLen*sizeof(short*));
+	waveform = (float**)malloc(scaleLen*sizeof(float*));
 	for(i=0; i < scaleLen; i++) {
-		waveform[i] = (short*)malloc(length*sizeof(short));
+		waveform[i] = (float*)malloc(length*sizeof(float));
 	}
 
 	// generate notes and store to waveform
 	for(i=0;i<scaleLen;i++) {
-		synthesizeNote(scale[i], length, waveform[i]);
+		synthesizeNote(scale[i], waveform[i], length);
+		envelope(waveform[i], length);
 	}
 
+	for(i=0;i<length;i++) {
+		printf("%d\n", waveform[0][i]);
+	}
 
 	// write to wav file
 	FILE * f = wavfile_open("sound.wav");

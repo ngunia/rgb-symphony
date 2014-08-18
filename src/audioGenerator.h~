@@ -8,6 +8,7 @@
 
 
 float key2freq(int key);
-short* synthesizeNote(int key, int length);
+void synthesizeNote(int key, unsigned short *rv, int length);
+void envelope(unsigned short *note, int length);
 
 #endif
