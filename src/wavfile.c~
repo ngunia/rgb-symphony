@@ -32,7 +32,7 @@ FILE * wavfile_open( const char *filename )
 	struct wavfile_header header;
 
 	int samples_per_second = WAVFILE_SAMPLES_PER_SECOND;
-	int bits_per_sample = 16;
+	int bits_per_sample = 32;
 
 	strncpy(header.riff_tag,"RIFF",4);
 	strncpy(header.wave_tag,"WAVE",4);
