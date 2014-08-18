@@ -127,6 +127,7 @@ int write_wav(long* sound, int len) {
 }
 */
 
+/*
 int main()
 {
 	int length = NUM_SAMPLES;
@@ -165,5 +166,6 @@ int main()
 	return 0;
 
 }
+*/
 
 

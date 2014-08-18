@@ -23,7 +23,7 @@ int* getNoteArray(IplImage* source, int roiSize) {
 
         		// ... do what you want with your cropped image ...
 			rv = cvAvg(cropSource, NULL);
-			d[j*source->height/roiSize + i] = (int)ceil((rv.val[0] + rv.val[1] + rv.val[2] + 3)/8.73);
+			d[j*source->height/roiSize + i] = (int)ceil((rv.val[0] + rv.val[1] + rv.val[2] + 3)/8.73) - 1;
 			
         		// always reset the ROI
         		cvResetImageROI(source);
