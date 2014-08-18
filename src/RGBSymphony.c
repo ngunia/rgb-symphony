@@ -20,13 +20,13 @@ int main(int argc, char ** argv) {
 
 	int* notes = getNoteArray(src, dim);
 	int lengthNotes = (src->height/dim)*(src->width/dim);
-/*
-	
+
+	/*
 	for( i = 0; i < lengthNotes; i++)
 	{
-		printf("%d", notes[i]);
+		printf("%d ", notes[i]);
 	}
-*/
+	*/
 
 	float** waveform; // holds a list of notes
 	// allocate memory for waveform
@@ -43,9 +43,11 @@ int main(int argc, char ** argv) {
 		envelope(waveform[i], length);
 	}
 
+	/*
 	for(i=0;i<length;i++) {
 		printf("%f\n", waveform[0][i]);
 	}
+	*/
 
 	// write to wav file
 	FILE * f = wavfile_open("sound.wav");

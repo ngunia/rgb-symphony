@@ -13,7 +13,7 @@ int* getNoteArray(IplImage* source, int roiSize) {
 	
 	for(j = 0; j < source->height/roiSize; ++j) {
     		for(i = 0; i < source->width/roiSize; ++i) {    
-        		cvSetImageROI(source, cvRect(j*roiSize, i*roiSize, roiSize, roiSize));
+        		cvSetImageROI(source, cvRect(i*roiSize, j*roiSize, roiSize, roiSize));
 
         		// cropped image
         		IplImage *cropSource = cvCreateImage(cvGetSize(source), source->depth, source->nChannels);

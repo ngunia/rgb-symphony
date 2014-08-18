@@ -4,13 +4,13 @@
 #include <errno.h>
 
 
-
+	
 int main(int argc, char ** argv) {
     IplImage *src; // the source image
+	// to set BPM ****NOT DONE YET****	
+	int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/4);
 	int length = NUM_SAMPLES;	
 	int volume = 32000;
-	// to set BPM ****NOT DONE YET****
-	const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
 	int i;
     // Load the source image
     
@@ -20,13 +20,13 @@ int main(int argc, char ** argv) {
 
 	int* notes = getNoteArray(src, dim);
 	int lengthNotes = (src->height/dim)*(src->width/dim);
-/*
-	
+
+	/*
 	for( i = 0; i < lengthNotes; i++)
 	{
-		printf("%d", notes[i]);
+		printf("%d ", notes[i]);
 	}
-*/
+	*/
 
 	float** waveform; // holds a list of notes
 	// allocate memory for waveform
@@ -43,9 +43,11 @@ int main(int argc, char ** argv) {
 		envelope(waveform[i], length);
 	}
 
+	/*
 	for(i=0;i<length;i++) {
 		printf("%f\n", waveform[0][i]);
 	}
+	*/
 
 	// write to wav file
 	FILE * f = wavfile_open("sound.wav");
