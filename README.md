@@ -17,5 +17,4 @@ assertions:
 	dimensions work
 
 sound:
-pass in output file name
 pass in BPM (divisible by 4)

@@ -10,5 +10,6 @@
 float key2freq(int key);
 void synthesizeNote(int key, float *rv, int length);
 void envelope(float *note, int length);
+int write_wav(char* fileName, float** sound, int length, int numNotes);
 
 #endif

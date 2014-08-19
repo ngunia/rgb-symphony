@@ -7,7 +7,7 @@
 #include "wavfile.h"
 #include "audioGenerator.h"
 
-// ~0.5 seconds per note
+// ~0.5 seconds per note TODO this will need to be passed for BPM
 const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
 
 /*
@@ -121,11 +121,43 @@ void envelope(float *note, int length) {
 	free(ADSR);
 }
 
-/* worry about this later
-int write_wav(long* sound, int len) {
+/*
+ * function: write_wav 
+ * --------------------
+ * writes the 2D sound array to a .wav
+ * 
+ * fileName: string that names the wav file
+ * sound: 2D array of floats that describes each sound sample
+ * length: length of each sound sample
+ * numNotes: number of sound samples
+ *
+ * returns whether or not writing the wav was successful
+ *
+ * Description of ADSR envelopes
+ * http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope
+ */
+int write_wav(char* fileName, float** sound, int length, int numNotes) {
+	char fileN[64];
+	strcpy(fileN, fileName);	
+	// ensure file ends in .wav
+	if(strstr(fileName, ".wav") == NULL) {	
+		
+		strcat(fileN, ".wav");
+	}	
 
+	// open file
+	FILE * f = wavfile_open(fileN);
+	if(!f) {
+		return 1;
+	}
+
+	// write and close file
+	wavfile_write(f,sound,length,numNotes);
+	wavfile_close(f);
+
+	return 0; // successful
 }
-*/
+
 
 /*
 int main()
@@ -154,14 +186,7 @@ int main()
 	}
 
 	// write to wav file
-	FILE * f = wavfile_open("sound.wav");
-	if(!f) {
-		printf("couldn't open sound.wav for writing: %s",strerror(errno));
-		return 1;
-	}
-
-	wavfile_write(f,waveform,length,scaleLen);
-	wavfile_close(f);
+	
 
 	return 0;
 
