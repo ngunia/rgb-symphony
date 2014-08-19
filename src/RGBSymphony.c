@@ -1,13 +1,12 @@
 #include <errno.h>
-#include <string.h>
 #include "RGBSym.h"
 #include "audioGenerator.h"
 #include "wavfile.h"
 
 int main(int argc, char ** argv) {
     IplImage *src; // the source image
-	// TODO set BPM 	
-	int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
+	// TODO set BPM properly (use argv3)
+	int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/4);
 	int length = NUM_SAMPLES;	
 	int volume = 32000;
 	char outputFileName[60];

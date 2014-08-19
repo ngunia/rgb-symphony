@@ -1,13 +1,10 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <time.h>
-#include <errno.h>
 #include "wavfile.h"
 #include "audioGenerator.h"
 
-// ~0.5 seconds per note
+// ~0.5 seconds per note TODO this will need to be passed for BPM
 const int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/2);
 
 /*
@@ -54,7 +51,7 @@ void synthesizeNote(int key,  float *rv, int length) {
 	int volume = 32000;
 	
 	int i;
-	for(i=0;i<NUM_SAMPLES;i++) {
+	for(i=0;i<length;i++) {
 		// sample times in seconds
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
 		// get fundamental freq
@@ -157,40 +154,3 @@ int write_wav(char* fileName, float** sound, int length, int numNotes) {
 
 	return 0; // successful
 }
-
-
-/*
-int main()
-{
-	int length = NUM_SAMPLES;
-	int scale[8] = {40, 42, 44, 45, 47, 49, 51, 52};
-	int scaleLen = sizeof(scale)/sizeof(scale[0]);
-	int volume = 32000;
-	int i;
-	
-	float** waveform; // holds a list of notes
-	// allocate memory for waveform
-	waveform = (float**)malloc(scaleLen*sizeof(float*));
-	for(i=0; i < scaleLen; i++) {
-		waveform[i] = (float*)malloc(length*sizeof(float));
-	}
-
-	// generate notes and store to waveform
-	for(i=0;i<scaleLen;i++) {
-		synthesizeNote(scale[i], waveform[i], length);
-		envelope(waveform[i], length);
-	}
-
-	for(i=0;i<length;i++) {
-		printf("%f\n", waveform[0][i]);
-	}
-
-	// write to wav file
-	
-
-	return 0;
-
-}
-*/
-
-
