@@ -10,7 +10,6 @@ int* getNoteArray(IplImage* source, int roiSize) {
 	
 	
 	d = (int*) malloc(numImages*sizeof(int));
-	
 	for(j = 0; j < source->width/roiSize; ++j) {
     		for(i = 0; i < source->height/roiSize; ++i) {    
         		cvSetImageROI(source, cvRect(j*roiSize, i*roiSize, roiSize, roiSize));

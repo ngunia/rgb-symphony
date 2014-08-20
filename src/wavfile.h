@@ -12,7 +12,8 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-FILE * wavfile_open( const char *filename );
+int scaleOutputSampleFreq(int BPM);
+FILE * wavfile_open( const char *filename, int BPM );
 void wavfile_write( FILE *file, float **data, int length, int size );
 void wavfile_close( FILE * file );
 

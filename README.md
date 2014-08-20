@@ -16,5 +16,3 @@ assertions:
 	file exists
 	dimensions work
 
-sound:
-pass in BPM (divisible by 4)

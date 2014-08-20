@@ -4,6 +4,7 @@
 #include "wavfile.h"
 #include "audioGenerator.h"
 
+
 /*
  * function: key2freq 
  * --------------------
@@ -48,6 +49,7 @@ void synthesizeNote(int key,  float *rv, int length) {
 	int volume = 32000;
 	
 	int i;
+	#pragma omp parallel for
 	for(i=0;i<length;i++) {
 		// sample times in seconds
 		double t = (double) i / WAVFILE_SAMPLES_PER_SECOND;
@@ -130,7 +132,7 @@ void envelope(float *note, int length) {
  * Description of ADSR envelopes
  * http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope
  */
-int write_wav(char* fileName, float** sound, int length, int numNotes) {
+int write_wav(char* fileName, float** sound, int length, int numNotes, int BPM) {
 	char fileN[64];
 	strcpy(fileN, fileName);	
 	// ensure file ends in .wav
@@ -140,7 +142,7 @@ int write_wav(char* fileName, float** sound, int length, int numNotes) {
 	}	
 
 	// open file
-	FILE * f = wavfile_open(fileN);
+	FILE * f = wavfile_open(fileN, BPM);
 	if(!f) {
 		return 1;
 	}

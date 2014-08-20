@@ -3,17 +3,26 @@
 #include "audioGenerator.h"
 #include "wavfile.h"
 
+/*
+ * argv[1] -> source image
+ * argv[2] -> square side length
+ * argv[3] -> BPM
+ * argv[4] -> output file name (with OR without ".wav" at end)
+ */
 int main(int argc, char ** argv) {
     IplImage *src; // the source image
-	// TODO set BPM properly (use argv3)
-	int NUM_SAMPLES = (int)(WAVFILE_SAMPLES_PER_SECOND/4);
-	int length = NUM_SAMPLES;	
+	int BPM = atoi(argv[3]);
+	int length = SAMPLE_RATE;
 	int volume = 32000;
 	char outputFileName[60];
 	int i;
 
+	if (argc < 5) {
+		fprintf(stderr,"Error: Insufficient arguments, proper usage is './RGBSymphony <path/to/image> <square side length> <BPM> <output file name>'\n");
+	}
+
 	// copy output file name
-	strcpy(outputFileName, argv[3]); // TODO should be argv4, bpm is 3
+	strcpy(outputFileName, argv[4]); 
 
     // Load the source image   
 	src = cvLoadImage(argv[1], CV_LOAD_IMAGE_COLOR);
@@ -38,6 +47,8 @@ int main(int argc, char ** argv) {
 	}
 
 	// generate notes and store to waveform
+	// openmp used for parallel threading
+	#pragma omp parallel for
 	for(i=0;i<lengthNotes;i++) {
 		// generate notes
 		synthesizeNote(notes[i], waveform[i], length);
@@ -45,14 +56,8 @@ int main(int argc, char ** argv) {
 		envelope(waveform[i], length);
 	}
 
-	/*
-	for(i=0;i<length;i++) {
-		printf("%f\n", waveform[0][i]);
-	}
-	*/
-
 	// write to wav file
-	int writeResult = write_wav(outputFileName, waveform, length, lengthNotes);
+	int writeResult = write_wav(outputFileName, waveform, length, lengthNotes, BPM);
 
 	if(writeResult==0) {
 		return 0;
@@ -61,4 +66,3 @@ int main(int argc, char ** argv) {
 		return 1;
 	}
 }
-

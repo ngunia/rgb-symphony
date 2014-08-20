@@ -6,7 +6,7 @@
 */
 
 #include "wavfile.h"
-
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,11 +26,34 @@ struct wavfile_header {
 	int	data_length;
 };
 
-FILE * wavfile_open( const char *filename )
+// scale the output frequency to change BPM
+int scaleOutputSampleFreq(int BPM) {
+
+	// at 44100 Hz, 1 beat per second
+	float scaleSampleRate = BPM/60.0;
+
+	int sampleFreq = (int)roundf(scaleSampleRate*WAVFILE_SAMPLES_PER_SECOND);
+
+	// ensure a minimum output frequency
+	if (sampleFreq < 40) {
+		printf("minimum output frequency not attained, setting to 40 Hz");
+		sampleFreq = 40;
+	}	
+
+	// make sure maximum output frequency isn't exceeded
+	if (sampleFreq > 192000) {
+		printf("minimum output frequency exceeded, setting to 192 kHz");
+		sampleFreq = 192000;
+	}	
+
+	return sampleFreq;
+}
+
+FILE * wavfile_open( const char *filename, int BPM)
 {
 	struct wavfile_header header;
 
-	int samples_per_second = WAVFILE_SAMPLES_PER_SECOND;
+	int samples_per_second = scaleOutputSampleFreq(BPM);
 	int bits_per_sample = 32;
 
 	strncpy(header.riff_tag,"RIFF",4);
@@ -62,6 +85,7 @@ FILE * wavfile_open( const char *filename )
 void wavfile_write( FILE *file, float **data, int length, int size )
 {
 	int i;
+	#pragma omp parallel for
 	for(i = 0; i < size; i++) {
   		fwrite(data[i], sizeof(float),length,file);
 	}
