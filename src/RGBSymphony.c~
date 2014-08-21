@@ -47,6 +47,7 @@ int main(int argc, char ** argv) {
 	}
 
 	// generate notes and store to waveform
+	// openmp used for parallel threading
 	#pragma omp parallel for
 	for(i=0;i<lengthNotes;i++) {
 		// generate notes

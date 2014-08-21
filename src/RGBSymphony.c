@@ -11,7 +11,7 @@
  */
 int main(int argc, char ** argv) {
     IplImage *src; // the source image
-	int BPM = atoi(argv[3]);
+	int BPM;
 	int length = SAMPLE_RATE;
 	int volume = 32000;
 	char outputFileName[60];
@@ -19,6 +19,16 @@ int main(int argc, char ** argv) {
 
 	if (argc < 5) {
 		fprintf(stderr,"Error: Insufficient arguments, proper usage is './RGBSymphony <path/to/image> <square side length> <BPM> <output file name>'\n");
+	}
+
+	// get BPM, ensure it is in range of capability
+	BPM = atoi(argv[3]);
+	if (BPM < 5) {
+		printf("Setting BPM to 5, passed BPM too low for good output\n");
+		BPM=5;
+	} else if(BPM > 260) {
+		printf("Setting BPM to 260, passed BPM too high for good output\n");
+		BPM=260;
 	}
 
 	// copy output file name
@@ -60,9 +70,9 @@ int main(int argc, char ** argv) {
 	int writeResult = write_wav(outputFileName, waveform, length, lengthNotes, BPM);
 
 	if(writeResult==0) {
-		return 0;
+		return 0; // success
 	} else {
 		printf("couldn't open %s for writing: %s", outputFileName, strerror(errno));
-		return 1;
+		return 1; // error
 	}
 }

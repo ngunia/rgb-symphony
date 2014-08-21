@@ -4,7 +4,6 @@
 #include "wavfile.h"
 #include "audioGenerator.h"
 
-
 /*
  * function: key2freq 
  * --------------------
@@ -57,19 +56,19 @@ void synthesizeNote(int key,  float *rv, int length) {
 		float freq = key2freq(key);
 		// sin wave with given frequency at time t
 		// also add second and third harmonic with 1/(2^(n-1)) amplitude
-		rv[i] = volume*(sin(2*M_PI*freq*t));/* +
+		rv[i] = volume*(sin(2*M_PI*freq*t) +
 				(1/2)*sin(4*M_PI*freq*t) +
-				(1/4)*sin(6*M_PI*freq*t));*/
+				(1/4)*sin(6*M_PI*freq*t));
 	}
 }
 
 /*
- * function: synthesizeNote 
+ * function: envelope 
  * --------------------
  * applies an ADSR envelope to the passed in signal
  * 
- * note: float array of note samples that will be enveloped
- * length: the number of samples per note
+ * note: float array of one note's samples that will be enveloped
+ * length: the number of samples in note
  *
  * Description of ADSR envelopes
  * http://en.wikipedia.org/wiki/Synthesizer#ADSR_envelope
@@ -91,30 +90,26 @@ void envelope(float *note, int length) {
 		ADSR[k] = 0 + x / (0.2*length);
 		x++;
 	}
-
 	// add decay to ADSR, x < (0.2+0.05)*length
 	for(k,x=0; k < 0.25*length; k++, x++) {
 		ADSR[k] = 1 - 0.2*x/(0.05*length);	
 		x++;
 	}
-
 	// add sustain to ADSR, x < (0.2+0.05+0.4)*length
 	for(k,x=0; k < 0.65*length; k++, x++) {
 		ADSR[k] = 0.8 - 0.05*x/(0.4*length);
 		x++;
 	}
-
 	// add release to ADSR, x < (0.2+0.05+0.4+0.35)*length
 	for(k,x=0; k < length; k++, x++) {
 		ADSR[k] = 0.75 - 0.75*x/(0.35*length);
 	}
-
 	// apply envelope to signal
 	int i;
 	for(i=0; i < length; i++) {
 		note[i] = note[i]*ADSR[i];
 	}
-	free(ADSR);
+	free(ADSR); // free ADSR
 }
 
 /*
@@ -137,14 +132,14 @@ int write_wav(char* fileName, float** sound, int length, int numNotes, int BPM) 
 	strcpy(fileN, fileName);	
 	// ensure file ends in .wav
 	if(strstr(fileName, ".wav") == NULL) {	
-		
 		strcat(fileN, ".wav");
 	}	
 
 	// open file
 	FILE * f = wavfile_open(fileN, BPM);
 	if(!f) {
-		return 1;
+		printf("Could not open or create wav file\n");
+		return 1; // failed to open file
 	}
 
 	// write and close file

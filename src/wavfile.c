@@ -26,25 +26,19 @@ struct wavfile_header {
 	int	data_length;
 };
 
-// scale the output frequency to change BPM
+/*
+ * function: scaleOutputSampleFreq
+ * --------------------
+ * sets output frequency to play at specified BPM
+ * 
+ * BPM: int value of beats per minute
+ *
+ * returns modified output sampling frequency
+ */
 int scaleOutputSampleFreq(int BPM) {
-
 	// at 44100 Hz, 1 beat per second
 	float scaleSampleRate = BPM/60.0;
-
 	int sampleFreq = (int)roundf(scaleSampleRate*WAVFILE_SAMPLES_PER_SECOND);
-
-	// ensure a minimum output frequency
-	if (sampleFreq < 40) {
-		printf("minimum output frequency not attained, setting to 40 Hz");
-		sampleFreq = 40;
-	}	
-
-	// make sure maximum output frequency isn't exceeded
-	if (sampleFreq > 192000) {
-		printf("minimum output frequency exceeded, setting to 192 kHz");
-		sampleFreq = 192000;
-	}	
 
 	return sampleFreq;
 }
@@ -64,7 +58,7 @@ FILE * wavfile_open( const char *filename, int BPM)
 	header.riff_length = 0;
 	header.fmt_length = 16;
 	header.audio_format = 3;
-	header.num_channels = 1;
+	header.num_channels = 2;
 	header.sample_rate = samples_per_second;
 	header.byte_rate = samples_per_second*(bits_per_sample/8);
 	header.block_align = bits_per_sample/8;
