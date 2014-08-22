@@ -56,9 +56,9 @@ void synthesizeNote(int key,  float *rv, int length) {
 		float freq = key2freq(key);
 		// sin wave with given frequency at time t
 		// also add second and third harmonic with 1/(2^(n-1)) amplitude
-		rv[i] = volume*(sin(2*M_PI*freq*t) +
-				(1/2)*sin(4*M_PI*freq*t) +
-				(1/4)*sin(6*M_PI*freq*t));
+		rv[i] = volume*(cos(2*M_PI*freq*t) +
+				(1/2)*cos(4*M_PI*freq*t) +
+				(1/4)*cos(6*M_PI*freq*t));
 	}
 }
 
