@@ -8,16 +8,3 @@ Call code by typing:
 
 Listen by typing: 
 aplay <output_file_name>.wav
-
-
-TODO:
-general: 
-add open mp threading
-
-image:
-better mapping algorithm
-fix to read left to right
-assertions:
-	file exists
-	dimensions work
-
