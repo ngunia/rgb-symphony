@@ -10,11 +10,8 @@ int* getNoteArray(IplImage* source, int roiSize) {
 
         d = (int*) malloc(numImages*sizeof(int));
 
-        #pragma omp parallel for
         for(j = 0; j < source->width/roiSize; ++j) {
-                #pragma omp parallel for
                 for(i = 0; i < source->height/roiSize; ++i) {
-                        #pragma omp critical
                         {
                                 //Set source into zoomed area
                                 cvSetImageROI(source, cvRect(j*roiSize, i*roiSize, roiSize, roiSize));
