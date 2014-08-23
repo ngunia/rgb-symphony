@@ -36,15 +36,15 @@ int* getNoteArray(IplImage* source, int roiSize) {
 
 
 int RGB2Note(CvScalar in) {
-/*
+
         double sum = in.val[0] + in.val[1] + in.val[2] + 3;
         double mod = sum/8.73;
 
         int rv = (int)ceil(mod);
 
         return rv;
-*/
 
+/*
         int rv = 1;
 
         //R > G and B, range 59 - 88 in notes
@@ -66,6 +66,6 @@ int RGB2Note(CvScalar in) {
 
         return rv;
 
-
+*/
 }
 
