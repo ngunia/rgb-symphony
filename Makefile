@@ -5,7 +5,7 @@ LIBS=-lm `pkg-config --libs opencv` -fopenmp
 
 main: $(TARGETS)
 
-lib/%.o: src/%.c
+lib/%.o: src/%.c lib
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:
@@ -13,3 +13,6 @@ clean:
 
 %:lib/%.o lib/audioGenerator.o lib/RGBSym.o lib/wavfile.o
 	$(CC) -o $@ $^ $(LIBS)
+
+lib:
+	mkdir lib
