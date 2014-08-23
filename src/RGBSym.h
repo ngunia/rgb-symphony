@@ -10,5 +10,7 @@
 
 int* getNoteArray(IplImage* source, int roiSize);
 
+int RGB2Note(CvScalar in);
+
 
 #endif /* RGBSYM_H_ */
